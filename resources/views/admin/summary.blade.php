@@ -23,9 +23,9 @@
   <link id="pagestyle" href="{{URL::to('/assets/css/material-dashboard.css?v=3.0.0')}}" rel="stylesheet" />
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-  <style type="text/css">
+   <style type="text/css">
     .product_align{
-      padding-left: 30px !important;
+      padding-left: 25px !important;
     }
   </style>
 </head>
@@ -57,69 +57,101 @@
     <!-- End Navbar -->
     <div class="container-fluid py-4">
       <div class="row">
-        
-        <div class="col-12">
-            <div class="card my-4">
-              <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                  <h6 class="text-white text-capitalize ps-3">Sales Report</h6>
-                </div>
+        @if(Auth::user()->hasRole('admin'))
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+          <div class="card">
+            <div class="card-header p-3 pt-2">
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">weekend</i>
               </div>
-              <div class="card-body px-0 pb-2">
-                <div class="table-responsive p-0">
-                  <form method="get">
-                   
-                    <input type="date" name="start_date">
-                    <input type="date" name="end_date">
-                    <input type="submit" value="Generate">
-                  </form>
-                  <table class="table align-items-center mb-0">
-                    <thead>
-                      <tr>
-                        
-                        <th class="text-uppercase text-uppercase">ID</th>
-                        <th class="text-uppercase text-uppercase">Name</th>
-                        <th class="text-center ">Sold Quantity</th>
-                       
-                        <th class="text-secondary ">Total Sold Price</th>
-                       
-                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($orders as $order)
-                      
-                        <tr>
-                          <td class=" text-md product_align">
-                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->id}}</p>
-                          
-                        </td>
-                        <td class=" text-md product_align">
-                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->name}}</p>
-                          
-                        </td>
-
-                        <td class=" text-md product_align" style="padding-left: 250px !important;">
-                          <p class="text-xs font-weight-bold mb-0">{{$order->quantity}}</p>
-                          
-                        </td>
-
-                        <td class=" text-md product_align">
-                          <p class="text-xs font-weight-bold mb-0">{{$order->total}}</p>
-                          
-                        </td>
-
-                        </tr>
-                        @endforeach
-                      
-                        
-                    </tbody>
-                  </table>
-                  <h3>Total: P {{number_format($sum, 2, '.', ' ')}}</h3>
-                </div>
+              <div class="text-end pt-1">
+                <p class="text-sm mb-0 text-capitalize">Total Inventory</p>
+                <h4 class="mb-0">{{$total_inventory}}</h4>
+                <p class="text-sm mb-0 text-capitalize">Total Transaction</p>
+                <h4 class="mb-0">{{$total_transactions}}</h4>
+                <p class="text-sm mb-0 text-capitalize">Total Deducted Items</p>
+                <h4 class="mb-0">{{$total_deducted}}</h4>
+                <p class="text-sm mb-0 text-capitalize">Total Added Items</p>
+                <h4 class="mb-0">{{$total_added}}</h4>
               </div>
             </div>
+            <hr class="dark horizontal my-0">
+            <div class="card-footer p-3">
+              
+            </div>
           </div>
+        </div>
+        @endif
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <h6>Top Sold Items</h6>
+                <p class="text-sm">
+                  <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                  Top <span class="font-weight-bold">10</span>
+                </p>
+              </div>
+              @foreach($top5_sales as $sale)
+              <div class="card-body p-3">
+                <div class="timeline timeline-one-side">
+                  
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="material-icons text-danger text-gradient"></i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">Name: {{$sale->name}}</h6>
+                      <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Total Sales: {{$sale->total_sales}}</p>
+                    </div>
+                  </div>
+
+                 
+                </div>
+              </div>
+              @endforeach
+            </div>
+        </div>
+
+       
+
+          <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card h-100">
+              <div class="card-header pb-0">
+                <h6>Logged Personnel</h6>
+                <p class="text-sm">
+                  <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                  Top <span class="font-weight-bold">10</span>
+                </p>
+              </div>
+              @foreach($logs as $log)
+              <div class="card-body p-3">
+                <div class="timeline timeline-one-side">
+                  
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="material-icons text-danger text-gradient">{{$log->action}}</i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">{{$log->user->first_name}}</h6>
+                      <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$log->created_at->diffForHumans()}}</p>
+                    </div>
+                  </div>
+
+                 
+                </div>
+              </div>
+              @endforeach
+            </div>
+        </div>
+
+        
+
+        
+
+      </div>
+      <div class="row">
+        
+        
 
       </div>
 
@@ -147,7 +179,7 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-   @include('shared.notification')
+   
 </body>
 
 </html>

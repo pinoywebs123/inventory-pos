@@ -23,6 +23,11 @@
   <link id="pagestyle" href="{{URL::to('/assets/css/material-dashboard.css?v=3.0.0')}}" rel="stylesheet" />
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <style type="text/css">
+    .product_align{
+      padding-left: 30px !important;
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
@@ -78,12 +83,34 @@
                     </thead>
                     <tbody>
 
+                        @foreach($orders as $order)
                       
                       <tr>
-                        
+
+                        <td class=" text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->name}}</p>
+                          
+                        </td>
+                        <td class=" text-md" style="padding-left: 200px !important;">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->unit_measurement}}</p>
+                          
+                        </td>
+                        <td class=" text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->quantity}}</p>
+                          
+                        </td>
+                        <td class=" text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->net_value}}</p>
+                          
+                        </td>
+                        <td class=" text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->total}}</p>
+                          
+                        </td>
+                       
 
                       </tr>
-
+                      @endforeach
                       
                      
                     </tbody>

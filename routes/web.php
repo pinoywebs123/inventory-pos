@@ -17,9 +17,16 @@ Route::get('/logout',[AuthController::class,'logout'])->name('logout');
 Route::group(['middleware'=> 'auth'], function(){
 
     Route::get('/users',[UserController::class,'users'])->name('users');
+    Route::post('/users-get',[UserController::class,'users_get'])->name('users_get');
+    Route::post('/users-update',[UserController::class,'users_update'])->name('users_update');
+    Route::get('/summary',[UserController::class,'summary'])->name('summary');
     Route::get('/users-delete/{id}',[UserController::class,'users_delete'])->name('users_delete');
     Route::get('/inventory',[UserController::class,'inventory'])->name('inventory');
     Route::post('/inventory-check',[UserController::class,'inventory_check'])->name('inventory_check');
+    Route::post('/inventory-update',[UserController::class,'inventory_update'])->name('inventory_update');
+    Route::post('/inventory-get',[UserController::class,'inventory_get'])->name('inventory_get');
+    Route::post('/order_check',[UserController::class,'order_check'])->name('order_check');
+    Route::post('/inventory-stock-update',[UserController::class,'inventory_stock_update'])->name('inventory_stock_update');
     Route::get('/inventory-suspend/{id}',[UserController::class,'inventory_suspend'])->name('inventory_suspend');
     Route::get('/product',[UserController::class,'product'])->name('product');
     Route::get('/ordering',[UserController::class,'ordering'])->name('ordering');

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Logged;
 
 class AuthController extends Controller
 {
@@ -25,14 +26,20 @@ class AuthController extends Controller
 
         if( Auth::attempt(['username'=> $credential['username'], 'password'=> $credential['password']]) )
         {
+            $log = new Logged;
+            $log->user_id = Auth::user()->id;
+            $log->action = 'logged in';
+            $log->save();
 
             if( Auth::user()->hasRole('admin') )
             {
-                return redirect()->route('users');
+                return redirect()->route('summary');
             }else 
             {
-                return redirect()->route('inventory');
+                return redirect()->route('summary');
             }
+
+
            
             
             
@@ -44,6 +51,13 @@ class AuthController extends Controller
 
     public function logout()
     {
+        
+
+        $log = new Logged;
+        $log->user_id = Auth::id();
+        $log->action = 'logged out';
+        $log->save();
+
         Auth::logout();
         return redirect('/login');
     }

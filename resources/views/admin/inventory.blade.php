@@ -84,7 +84,7 @@
                         <th class="text-secondary ">Measurement</th>
                         <th class="text-secondary ">Unit Cost</th>
                         <th class="text-secondary ">Net Value</th>
-                        <th class="text-secondary ">ACtions</th>
+                        <th class="text-secondary ">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -123,13 +123,13 @@
                           
                         </td>
                         <td>
-                          <button class="btn btn-info btn-sm">Edit</button>
+                          <button class="btn btn-info btn-sm update_inventory" value="{{$inventory->id}}" data-bs-toggle="modal" data-bs-target="#myModalEdit">Edit</button>
                           @if( $inventory->status_id == 1 )
                             <a href="{{route('inventory_suspend',['id'=> $inventory->id])}}" class="btn btn-danger btn-sm">Suspend</a>
                           @elseif($inventory->status_id == 0)
                             <a href="{{route('inventory_suspend',['id'=> $inventory->id])}}" class="btn btn-success btn-sm">Available</a>
                           @endif
-                          
+                          <button class="btn btn-primary btn-sm update_stock" value="{{$inventory->id}}" data-bs-toggle="modal" data-bs-target="#myModal2">Update Stock</button>
                         </td>
 
                        
@@ -153,73 +153,183 @@
   </main>
 
   <div class="modal" id="myModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Inventory Information</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Inventory Information</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-      <!-- Modal body -->
-      <div class="modal-body">
-       
-       <form action="{{route('inventory_check')}}" method="POST" enctype="multipart/form-data">
+        <!-- Modal body -->
+        <div class="modal-body">
          
-          @csrf
-         <select class="form-select" required name="category_id">
-          <option value="">SELECT CATEGORY</option>
-          @foreach($categories as $category)
+         <form action="{{route('inventory_check')}}" method="POST" enctype="multipart/form-data">
+           
+            @csrf
+           <select class="form-select" required name="category_id">
+            <option value="">SELECT CATEGORY</option>
+            @foreach($categories as $category)
+                
+                <option value="{{$category->id}}">{{$category->name}}</option>
+                
+            @endforeach
+            </select>         
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Item Name</label>
+              <input type="text" class="form-control" name="name" required>
+          </div>
+
+          <div class="input-group input-group-outline my-3">
               
-              <option value="{{$category->id}}">{{$category->name}}</option>
-              
-          @endforeach
-          </select>         
-        <div class="input-group input-group-outline my-3">
-            <label class="form-label">Item Name</label>
-            <input type="text" class="form-control" name="name" required>
+              <input type="file" class="form-control" name="picture" placeholder="Item Image" required>
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Quantity</label>
+              <input type="number" class="form-control" name="quantity" min="1" required>
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Unit Measurement</label>
+              <input type="number" class="form-control" name="unit_measurement" min="1" required>
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Unit Cost</label>
+              <input type="number" class="form-control" name="unit_cost" min="1" required>
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Net Value</label>
+              <input type="number" class="form-control" name="net_value" min="1" required>
+          </div>
+
+          <button type="submt" class="btn btn-primary" >Submit</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+
+         </form>
+         
         </div>
 
-        <div class="input-group input-group-outline my-3">
-            
-            <input type="file" class="form-control" name="picture" placeholder="Item Image" required>
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          
         </div>
 
-        <div class="input-group input-group-outline my-3">
-            <label class="form-label">Quantity</label>
-            <input type="number" class="form-control" name="quantity" min="1" required>
-        </div>
-
-        <div class="input-group input-group-outline my-3">
-            <label class="form-label">Unit Measurement</label>
-            <input type="number" class="form-control" name="unit_measurement" min="1" required>
-        </div>
-
-        <div class="input-group input-group-outline my-3">
-            <label class="form-label">Unit Cost</label>
-            <input type="number" class="form-control" name="unit_cost" min="1" required>
-        </div>
-
-        <div class="input-group input-group-outline my-3">
-            <label class="form-label">Net Value</label>
-            <input type="number" class="form-control" name="net_value" min="1" required>
-        </div>
-
-        <button type="submt" class="btn btn-primary" >Submit</button>
-        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-
-       </form>
-       
       </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-        
-      </div>
-
     </div>
-  </div>
+</div>
+
+<div class="modal" id="myModal2">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title" id="order_title"></h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+         
+         <form action="{{route('inventory_stock_update')}}" method="POST">
+           
+            @csrf
+           <input type="hidden" name="inventory_id" id="inventory_id">
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Enter Quantity</label>
+              <input type="number" class="form-control" name="quantity" min="1" required>
+          </div>
+
+          <button type="submt" class="btn btn-primary" >Update Stock</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+
+         </form>
+         
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          
+        </div>
+
+      </div>
+    </div>
+</div>
+
+<div class="modal" id="myModalEdit">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Update Inventory Information</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+         
+         <form action="{{route('inventory_update')}}" method="POST" enctype="multipart/form-data">
+           
+            @csrf
+            <input type="hidden" name="inventory_id" id="inventory_id_update">
+           <select class="form-select" required name="category_id" id="category_id">
+            <option value="">SELECT CATEGORY</option>
+            @foreach($categories as $category)
+                
+                <option value="{{$category->id}}">{{$category->name}}</option>
+                
+            @endforeach
+            </select>         
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" name="name" required id="name" >
+          </div>
+
+          <!-- <div class="input-group input-group-outline my-3">
+              
+              <input type="file" class="form-control" name="picture" placeholder="Item Image" required>
+          </div> -->
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Quantity</label>
+              <input type="number" class="form-control" name="quantity" min="1" required id="quantity">
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Unit Measurement</label>
+              <input type="number" class="form-control" name="unit_measurement" min="1" required id="unit_measurement">
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Unit Cost</label>
+              <input type="number" class="form-control" name="unit_cost" min="1" required id="unit_cost">
+          </div>
+
+          <div class="input-group input-group-outline my-3">
+              <label class="form-label">Net Value</label>
+              <input type="number" class="form-control" name="net_value" min="1" required id="net_value">
+          </div>
+
+          <button type="submt" class="btn btn-primary" >Update</button>
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+
+         </form>
+         
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          
+        </div>
+
+      </div>
+    </div>
 </div>
   
   <!--   Core JS Files   -->
@@ -236,7 +346,56 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".update_stock").click(function(){
+        
+        var inventory_id = $(this).val();
+        var url = '{{route("inventory_get")}}';
+        var token = '{{Session::token()}}';
 
+          $.ajax({
+            method:'POST',
+            url:url,
+            data:{_token : token,inventory_id: inventory_id},
+              success:function(data) {
+                  console.log(data);
+                  $("#order_title").text(data.name);
+                  $("#inventory_id").val(data.id);
+              }
+          });
+        
+
+        });
+
+      $(".update_inventory").click(function(){
+        
+        var inventory_id = $(this).val();
+        var url = '{{route("inventory_get")}}';
+        var token = '{{Session::token()}}';
+
+          $.ajax({
+            method:'POST',
+            url:url,
+            data:{_token : token,inventory_id: inventory_id},
+              success:function(data) {
+                  console.log(data);
+                  $("#inventory_id_update").val(data.id);
+                  $("#category_id").val(data.category_id);
+                  $("#name").val(data.name);
+                  $("#quantity").val(data.quantity);
+                  $("#unit_measurement").val(data.unit_measurement);
+                  $("#unit_cost").val(data.unit_cost);
+                  $("#net_value").val(data.net_value);
+                  
+              }
+          });
+        
+
+        });
+      
+    });
+  </script>
 </body>
 
 </html>

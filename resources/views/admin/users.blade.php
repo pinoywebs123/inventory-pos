@@ -56,6 +56,7 @@
     </nav>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
+      
       <div class="row">
         
         <div class="col-12">
@@ -110,7 +111,7 @@
                           
                         </td>
                          <td class="align-middle text-md product_align">
-                          <button class="btn btn-info btn-sm">Edit</button>
+                          <button class="btn btn-info btn-sm edit_user" value="{{$user->id}}" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
                           <a href="{{route('users_delete',$user->id)}}" class="btn btn-danger btn-sm">Delete</a>
                         </td>
                         
@@ -134,6 +135,76 @@
       
     </div>
   </main>
+
+  <div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="order_title"></h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+       
+       <form role="form" class="text-start" action="{{route('users_update')}}" method="POST">
+                  @csrf
+                  <input type="hidden" name="user_id" id="user_id">
+                  <select class="form-select" required name="user_type" id="user_type">
+                      <option value="">Select User Type</option>
+                      <option value="admin">Admin</option>
+                      <option value="user">User</option>
+                  </select>
+
+                  <div class="input-group input-group-outline my-3">
+                    
+                    <input type="text" class="form-control" name="first_name" id="first_name">
+                  </div>
+                  <div class="input-group input-group-outline my-3">
+                    
+                    <input type="text" class="form-control" name="middle_initial" id="middle_initial">
+                  </div>
+                  <div class="input-group input-group-outline my-3">
+                    
+                    <input type="text" class="form-control" name="last_name" id="last_name">
+                  </div>
+                  <div class="input-group input-group-outline my-3">
+                    
+                    <input type="email" class="form-control" name="email" id="email">
+                  </div>
+                  <div class="input-group input-group-outline my-3">
+                   
+                    <input type="text" class="form-control" name="username" id="username">
+                  </div>
+                  <div class="input-group input-group-outline my-3">
+                    
+                    <input type="text" class="form-control" name="contact" id="contact">
+                  </div>
+                  <div class="input-group input-group-outline mb-3">
+                    <label class="form-label">Password (Optional)</label>
+                    <input type="text" class="form-control" name="password" id="password">
+                  </div>
+                   
+                  
+                  <div class="text-center">
+                    <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Update</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                  </div>
+                 
+                </form>
+       
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        
+      </div>
+
+    </div>
+  </div>
+</div>
   
   <!--   Core JS Files   -->
   <script src="{{URL::to('/assets/js/core/popper.min.js')}}"></script>
@@ -149,6 +220,35 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".edit_user").click(function(){
+        var user_id = $(this).val();
+        var url = '{{route("users_get")}}';
+        var token = '{{Session::token()}}';
+          $.ajax({
+            method:'POST',
+            url:url,
+            data:{_token : token,user_id: user_id},
+              success:function(data) {
+                  console.log(data);
+                  $("#user_type").val(data.role);
+                  $("#first_name").val(data.first_name);
+                  $("#last_name").val(data.last_name);
+                  $("#middle_initial").val(data.middle_initial);
+                  $("#email").val(data.email);
+                  $("#username").val(data.username);
+                  $("#contact").val(data.contact);
+                  $("#user_id").val(data.id);
+                 
+              }
+          });
+        
+
+        });
+      
+    });
+  </script>
    
 </body>
 

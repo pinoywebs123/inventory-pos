@@ -25,7 +25,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
   <style type="text/css">
     .product_align{
-      padding-left: 45px !important;
+      padding-left: 20px !important;
     }
   </style>
 </head>
@@ -68,6 +68,8 @@
               <div class="card-body px-0 pb-2">
                 <div class="table-responsive p-0">
                   <table class="table align-items-center mb-0">
+                    @include('shared.error_handler')
+                    @include('shared.notification')
                     <thead>
                       <tr>
                         <th class="text-uppercase">Picture</th>
@@ -78,7 +80,7 @@
                        
                         <th class="text-secondary ">Stock</th>
                         <th class="text-secondary ">Price</th>
-                        
+                        <th class="text-secondary ">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -106,6 +108,10 @@
                           <p class="text-xs font-weight-bold mb-0">{{$inventory->net_value}}</p>
                           
                         </td>
+                        <td class="align-middle text-md product_align">
+                          <button value="{{$inventory->id}}" class="btn btn-danger order_button" data-bs-toggle="modal" data-bs-target="#myModal">Order</button>
+                          
+                        </td>
 
                       </tr>
 
@@ -129,6 +135,45 @@
       
     </div>
   </main>
+
+  <div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="order_title"></h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+       
+       <form action="{{route('order_check')}}" method="POST" enctype="multipart/form-data">
+         
+          @csrf
+         <input type="hidden" name="inventory_id" id="inventory_id">
+
+        <div class="input-group input-group-outline my-3">
+            <label class="form-label">Enter Quantity</label>
+            <input type="number" class="form-control" name="quantity" min="1" required>
+        </div>
+
+        <button type="submt" class="btn btn-primary" >Submit</button>
+        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+
+       </form>
+       
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        
+      </div>
+
+    </div>
+  </div>
+</div>
   
   <!--   Core JS Files   -->
   <script src="{{URL::to('/assets/js/core/popper.min.js')}}"></script>
@@ -144,7 +189,29 @@
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-   @include('shared.notification')
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".order_button").click(function(){
+        var inventory_id = $(this).val();
+        var url = '{{route("inventory_get")}}';
+        var token = '{{Session::token()}}';
+          $.ajax({
+            method:'POST',
+            url:url,
+            data:{_token : token,inventory_id: inventory_id},
+              success:function(data) {
+                  console.log(data);
+                  $("#order_title").text(data.name);
+                  $("#inventory_id").val(data.id);
+              }
+          });
+        
+
+        });
+      
+    });
+  </script>
+   
 </body>
 
 </html>
