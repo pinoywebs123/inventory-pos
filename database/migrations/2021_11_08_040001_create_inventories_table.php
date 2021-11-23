@@ -21,7 +21,7 @@ class CreateInventoriesTable extends Migration
             $table->string('name');
             $table->string('picture');
             $table->integer('quantity');
-            $table->float('unit_measurement');
+            $table->text('unit_measurement');
             $table->float('unit_cost');
             $table->float('net_value');
             $table->timestamps();
