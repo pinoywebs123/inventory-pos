@@ -77,6 +77,7 @@
                        
                         <th class="text-secondary ">Stock</th>
                         <th class="text-secondary ">Price</th>
+                        <th class="text-secondary ">Mesurement</th>
                         <th class="text-secondary ">Actions</th>
                       </tr>
                     </thead>
@@ -103,6 +104,10 @@
                         </td>
                         <td class="align-middle text-md product_align">
                           <p class="text-xs font-weight-bold mb-0">P{{number_format($inventory->net_value,2)}}</p>
+                          
+                        </td>
+                        <td class="align-middle text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$inventory->unit_measurement}}</p>
                           
                         </td>
                         <td class="align-middle text-md product_align">

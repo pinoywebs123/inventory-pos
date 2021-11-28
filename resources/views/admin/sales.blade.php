@@ -76,6 +76,7 @@
                         
                         <th class="text-uppercase text-uppercase">ID</th>
                         <th class="text-uppercase text-uppercase">Name</th>
+                        <th class="text-uppercase text-uppercase">Measurement</th>
                         <th class="text-center ">Sold Quantity</th>
                        
                         <th class="text-secondary ">Total Sold Price</th>
@@ -93,6 +94,10 @@
                         </td>
                         <td class=" text-md product_align">
                           <p class="text-xs font-weight-bold mb-0">{{$order->inventory->name}}</p>
+                          
+                        </td>
+                        <td class=" text-md product_align">
+                          <p class="text-xs font-weight-bold mb-0">{{$order->inventory->unit_measurement}}</p>
                           
                         </td>
 
