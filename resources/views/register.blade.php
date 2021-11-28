@@ -67,27 +67,27 @@
 
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" name="first_name">
+                    <input type="text" class="form-control" name="first_name" value="{{old('first_name')}}">
                   </div>
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Middle Name</label>
-                    <input type="text" class="form-control" name="middle_initial">
+                    <input type="text" class="form-control" name="middle_initial" value="{{old('middle_initial')}}">
                   </div>
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" name="last_name">
+                    <input type="text" class="form-control" name="last_name" value="{{old('last_name')}}">
                   </div>
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email">
+                    <input type="email" class="form-control" name="email" value="{{old('email')}}">
                   </div>
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Username</label>
-                    <input type="text" class="form-control" name="username">
+                    <input type="text" class="form-control" name="username" value="{{old('username')}}">
                   </div>
                   <div class="input-group input-group-outline my-3">
                     <label class="form-label">Contact</label>
-                    <input type="text" class="form-control" name="contact">
+                    <input type="text" class="form-control" name="contact" value="{{old('contact')}}">
                   </div>
                   <div class="input-group input-group-outline mb-3">
                     <label class="form-label">Password</label>

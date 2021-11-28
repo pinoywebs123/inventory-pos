@@ -29,10 +29,7 @@
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-        <img src="{{URL::to('/assets/img/logo-ct.png')}}" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold text-white">Dashboard</span>
-      </a>
+      
     </div>
     <hr class="horizontal light mt-0 mb-2">
 
@@ -71,7 +68,9 @@
                 <div class="table-responsive p-0">
                 @include('shared.error_handler')
                 @include('shared.notification')
+                  @if(Auth::user()->hasRole('admin'))
                   <button class="btn btn-sm bg-gradient-primary" data-bs-toggle="modal" data-bs-target="#myModal">Add Inventory</button>
+                  @endif
                   <table class="table align-items-center mb-0">
                     <thead>
                       <tr>
@@ -119,7 +118,7 @@
                           
                         </td>
                         <td class="align-middle text-center text-md">
-                          <p class="text-xs font-weight-bold mb-0">{{$inventory->net_value}}</p>
+                          <p class="text-xs font-weight-bold mb-0">P{{number_format($inventory->net_value,2)}}</p>
                           
                         </td>
                         <td>

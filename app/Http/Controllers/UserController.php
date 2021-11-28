@@ -71,6 +71,47 @@ class UserController extends Controller
 
     public function summary()
     {
+
+        if(isset($_GET['start_date']) && isset($_GET['end_date'])){
+            $start_date = $_GET['start_date'];
+            $end_date = $_GET['end_date'];
+
+            
+
+            if(empty($end_date) || is_null($end_date)){
+               
+                $start_date = $_GET['start_date'];
+                
+                
+                $total_inventory = Inventory::whereDate('created_at', Carbon::parse($start_date))->count();
+                $total_transactions = Order::whereDate('created_at', Carbon::parse($start_date))->count();
+                $total_deducted  = $summary = DB::table('inventory_watchers')->where('added',false)->whereDate('created_at', Carbon::parse($start_date))->sum('quantity');
+                $total_added  = $summary = DB::table('inventory_watchers')->where('added',true)->whereDate('created_at', Carbon::parse($start_date))->sum('quantity');
+
+
+            }else {
+               
+                
+
+                $total_inventory = Inventory::whereBetween('created_at', [Carbon::parse($start_date), Carbon::parse($end_date)])->count();
+                $total_transactions = Order::whereBetween('created_at', [Carbon::parse($start_date), Carbon::parse($end_date)])->count();
+                $total_deducted  = $summary = DB::table('inventory_watchers')->where('added',false)->whereBetween('created_at', [Carbon::parse($start_date), Carbon::parse($end_date)])->sum('quantity');
+                $total_added  = $summary = DB::table('inventory_watchers')->where('added',true)->whereBetween('created_at', [Carbon::parse($start_date), Carbon::parse($end_date)])->sum('quantity');
+
+            }
+            
+
+            
+        }else {
+
+            $total_inventory = Inventory::count();
+            $total_transactions = Order::count();
+            $total_deducted  = $summary = DB::table('inventory_watchers')->where('added',false)->sum('quantity');
+            $total_added  = $summary = DB::table('inventory_watchers')->where('added',true)->sum('quantity');
+        
+        }
+
+
         $top5_sales =  DB::table('orders')
                 ->join('inventories','orders.inventory_id','=','inventories.id')
                 ->select('inventory_id', DB::raw('SUM(orders.quantity) as total_sales'),'inventories.name as name')
@@ -79,13 +120,13 @@ class UserController extends Controller
                 ->limit(10)
                 ->get();
 
-        $logs = Logged::orderBy('created_at','DESC')->limit(10)->get();
-        $total_inventory = Inventory::count();
-        $total_transactions = Order::count();
-        $total_deducted  = $summary = DB::table('inventory_watchers')->where('added',false)->sum('quantity');
-        $total_added  = $summary = DB::table('inventory_watchers')->where('added',true)->sum('quantity');
+         $top5_critical_inventories =  Inventory::where('quantity','<=',10)->get();
 
-        return view('admin.summary',compact('logs','total_inventory','total_transactions','total_deducted','total_added','top5_sales'));
+        $logs = Logged::orderBy('created_at','DESC')->limit(10)->get();
+
+        
+
+        return view('admin.summary',compact('logs','total_inventory','total_transactions','total_deducted','total_added','top5_sales','top5_critical_inventories'));
 
     }
 
@@ -94,17 +135,27 @@ class UserController extends Controller
         $find_user = User::find($id);
         if(!$find_user)
         {
-            return back()->with('error','Inventory not Exist!');
+            return back()->with('error','User not Exist!');
         }
 
-        $find_user->delete();
-        return back()->with('success','User Successfully Deleted!');
+        if($find_user->status_id == 0)
+        {
+            User::where('id',$id)->update(['status_id'=> 1]);
+       
+        }else
+        {
+            User::where('id',$id)->update(['status_id'=> 0]);
+
+        }
+
+        
+        return back()->with('success','User Status Successfully Updated!');
     }
 
     public function inventory()
     {
         $categories = Category::all();
-        $inventories = Inventory::all();
+        $inventories = Inventory::orderBy('quantity','ASC')->get();
 
         return view('admin.inventory',compact('inventories','categories'));
     }
@@ -149,6 +200,9 @@ class UserController extends Controller
 
     public function inventory_check(Request $request)
     {
+        if(!Auth::user()->hasRole('admin')){
+            return back()->with('error','Admin is only allow to add Inventory');
+        }
        
         $credential = $request->validate([
             'category_id'       => 'required|max:100',

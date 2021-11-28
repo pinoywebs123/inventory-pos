@@ -26,6 +26,10 @@ class AuthController extends Controller
 
         if( Auth::attempt(['username'=> $credential['username'], 'password'=> $credential['password']]) )
         {
+            if(Auth::user()->status_id == 1)
+            {
+              return back()->with('error','Account is Suspended, Please contact Administrator');  
+            }
             $log = new Logged;
             $log->user_id = Auth::user()->id;
             $log->action = 'logged in';

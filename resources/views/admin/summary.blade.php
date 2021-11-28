@@ -34,10 +34,7 @@
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-        <img src="{{URL::to('/assets/img/logo-ct.png')}}" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold text-white">Dashboard</span>
-      </a>
+      
     </div>
     <hr class="horizontal light mt-0 mb-2">
 
@@ -61,9 +58,13 @@
         <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-success shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">weekend</i>
-              </div>
+              
+              <form method="get">
+                   
+                    <input type="date" name="start_date">
+                    <input type="date" name="end_date">
+                    <input type="submit" value="Generate">
+              </form>
               <div class="text-end pt-1">
                 <p class="text-sm mb-0 text-capitalize">Total Inventory</p>
                 <h4 class="mb-0">{{$total_inventory}}</h4>
@@ -111,10 +112,47 @@
               @endforeach
             </div>
         </div>
+        <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+              <div class="card-header pb-0">
+                <h6>Critical Stock Items below 10</h6>
+                <p class="text-sm">
+                  <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+                  Top <span class="font-weight-bold">10</span>
+                </p>
+              </div>
+              @foreach($top5_critical_inventories as $sale)
+              <div class="card-body p-3">
+                <div class="timeline timeline-one-side">
+                  
+                  <div class="timeline-block mb-3">
+                    <span class="timeline-step">
+                      <i class="material-icons text-danger text-gradient"></i>
+                    </span>
+                    <div class="timeline-content">
+                      <h6 class="text-dark text-sm font-weight-bold mb-0">Name: {{$sale->name}}</h6>
+                      <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">Total Stocks: {{$sale->quantity}}</p>
+                    </div>
+                  </div>
+
+                 
+                </div>
+              </div>
+              @endforeach
+            </div>
+        </div>
 
        
+        
 
-          <div class="col-xl-4 col-sm-6 mb-xl-0 mb-4">
+        
+
+        
+
+      </div>
+      <div class="row">
+        @if(Auth::user()->hasRole('admin'))
+          <div class="col-xl-4 col-sm-6 mb-xl-0 ">
             <div class="card h-100">
               <div class="card-header pb-0">
                 <h6>Logged Personnel</h6>
@@ -144,22 +182,11 @@
             </div>
         </div>
 
-        
-
-        
-
-      </div>
-      <div class="row">
-        
+        @endif
         
 
       </div>
 
-      <div class="row mt-4">
-        
-
-        
-      </div>
       
       
     </div>
