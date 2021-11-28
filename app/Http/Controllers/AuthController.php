@@ -88,6 +88,7 @@ class AuthController extends Controller
         unset($credential['repeat_password']);
         unset($credential['user_type']);
         $credential['password'] = bcrypt($request->password);
+        $credential['status_id'] = 0;
 
 
         DB::beginTransaction();
