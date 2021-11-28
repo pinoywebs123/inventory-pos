@@ -90,6 +90,8 @@ class AuthController extends Controller
         $credential['password'] = bcrypt($request->password);
         $credential['status_id'] = 0;
 
+       
+
 
         DB::beginTransaction();
 
