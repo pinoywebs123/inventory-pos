@@ -302,7 +302,7 @@
 
           <div class="input-group input-group-outline my-3">
               <label class="form-label">Unit Measurement</label>
-              <input type="number" class="form-control" name="unit_measurement" min="1" required id="unit_measurement">
+              <input type="text" class="form-control" name="unit_measurement" min="1" required id="unit_measurement">
           </div>
 
           <div class="input-group input-group-outline my-3">
